@@ -222,7 +222,6 @@ int main () {
   cin >> b;
 
   //print
-  //cout << "test: " << Mult.strDigitMult("-2", "1") << endl;
   cout << "karatsuba: " << Mult.karatsuba(a, b) << endl;
   cout << "grade school: " << Mult.gradeschool(a, b) << endl;
 
