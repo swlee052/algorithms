@@ -3,6 +3,12 @@
 #include <fstream>
 using namespace std;
 
+enum pickPivotMode {
+  firstElement,
+  lastElement,
+  medianOfThree,
+};
+
 class QSComparisonCount{
   private:
     int* arr;
@@ -13,8 +19,7 @@ class QSComparisonCount{
     int getMedianOfThree(int a, int b, int c);
     void countComparisons(int start, int inputArrSize);
     void swap(int a, int b);
-    void putLeftOfPivot(int a);
-    void putRightOfPivot(int a);
+
   public:
     QSComparisonCount(string fileName, pickPivotMode mode);
     int getArraySize();
@@ -22,14 +27,9 @@ class QSComparisonCount{
     int* getArray();
 };
 
-enum pickPivotMode {
-  firstElement,
-  lastElement,
-  medianOfThree,
-};
-
 int main (){
-  QSComparisonCount QSCC("quicksort-input.txt", firstElement);
+  QSComparisonCount QSCC("quicksort-input.txt", medianOfThree);
+  //QSComparisonCount QSCC("test.txt", medianOfThree);
   cout << "# comparisons during quicksort : " 
              << QSCC.getComparisonCount() << endl;
   return 0;
@@ -39,8 +39,9 @@ QSComparisonCount::QSComparisonCount(string fileName, pickPivotMode mode) {
   int i = 0;
   fstream inputFile;
   
-  //initialize arrSize and pivotMode
+  //initialize arrSize, compCount and pivotMode
   arrSize = 0;
+  compCount = 0;
   pivotMode = mode;
   inputFile.open(fileName);
   while (inputFile >> i) {
@@ -48,7 +49,7 @@ QSComparisonCount::QSComparisonCount(string fileName, pickPivotMode mode) {
   }
   inputFile.close();
 
-  //initialize array
+  //initialize arr
   arr = new int[arrSize];
   i = 0;
   inputFile.open(fileName);
@@ -61,29 +62,37 @@ QSComparisonCount::QSComparisonCount(string fileName, pickPivotMode mode) {
   countComparisons(0, arrSize);
 }
 
-void QSComparisonCount::countComparisons(int start, int inputArrSize) {
-  int pivIx = getPivotIndex(start, inputArrSize);
-  int lMaxIx = 0; // rightmost among those left of pivot (already compared)
-  int rMaxIx = 0; // rightmost among those right of pivot (already compared)
-
-  //base case
+void QSComparisonCount::countComparisons(int start, int inputArrSize) { 
+  // base case
   if (inputArrSize <= 1){
     return;
   }
 
-  for (int i=start; i<start+inputArrSize; i++){
-    if (i == pivIx){
-      continue;
-    }
-    else if (arr[i] <= arr[pivIx]){
-      lMaxIx++;
-      swap(lMaxIx, i);
-    }
-    else{
-      rMaxIx++;
-      swap(rMaxIx, i);
+  int pivIx = getPivotIndex(start, inputArrSize);
+  int pivot = arr[pivIx];
+ 
+  // put pivot at front and set rFirstIx
+  swap(pivIx, start); 
+  int rFirstIx = start + 1; //index of the first element in right partition
+
+  // partition around the pivot
+  for (int i=start+1; i<start+inputArrSize; i++){
+    //cout << i << ", " << arr[i] << endl;
+    if (arr[i] <= pivot){
+      swap(rFirstIx, i);
+      rFirstIx++;
     }
   }
+
+  // place pivot at its right index
+  swap(start, rFirstIx-1);
+
+  // update comparison count
+  compCount += inputArrSize-1;
+
+  // recurse
+  countComparisons(start, rFirstIx-start-1); // left partition
+  countComparisons(rFirstIx, inputArrSize-rFirstIx+start); // right partition
 }
 
 int QSComparisonCount::getPivotIndex(int start, int inputArrSize){
@@ -94,12 +103,12 @@ int QSComparisonCount::getPivotIndex(int start, int inputArrSize){
       return start + inputArrSize-1;
     case medianOfThree:
       if (inputArrSize%2 == 1){
-        return getMedianOfThree(start, (start + inputArrSize-1)/2, 
-                                                      inputArrSize-1);
+        return getMedianOfThree(start, start+(inputArrSize-1)/2, 
+                                                start+inputArrSize-1);
       }
       else {
-        return getMedianOfThree(start, (start + inputArrSize)/2 - 1, 
-                                                      inputArrSize-1);
+        return getMedianOfThree(start, start+inputArrSize/2 - 1, 
+                                                start+inputArrSize-1);
       }  
     default:
       cout << "Not a valid mode" << endl;
@@ -108,14 +117,17 @@ int QSComparisonCount::getPivotIndex(int start, int inputArrSize){
 };
 
 int QSComparisonCount::getMedianOfThree(int a, int b, int c){
-  if (arr[a]<=arr[b] && arr[b]<=arr[c]) {
+  if ((arr[a]<=arr[b] && arr[b]<=arr[c])
+      || (arr[c]<=arr[b] && arr[b]<=arr[a])) {
     return b;
   }
-  else if (arr[b]<=arr[a] && arr[a]<=arr[c]){
+  else if ((arr[b]<=arr[a] && arr[a]<=arr[c])
+           || (arr[c]<=arr[a] && arr[a]<=arr[b])){
+    return a;
+  }
+  else{
     return c;
   }
-  else
-    return a;
 }
 
 int* QSComparisonCount::getArray(){
