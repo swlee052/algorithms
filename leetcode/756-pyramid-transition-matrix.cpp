@@ -50,35 +50,32 @@ using namespace std;
 class Solution {
 public:
     bool pyramidTransition(string bottom, vector<string>& allowed) {
-        if (bottom.length() == 1) {
-            return true;
+      vector<vector<string>> possibleChar; 
+      vector<string> newBottom;
+      bool retVal = false;
+      
+      // compute all possible characters for each position (next level)
+      int size = allowed.size();
+      string currSubStr;
+      int newBottomSize = bottom.length() -1;
+      for (int j=0; j<newBottomSize; j++){
+        currSubStr = bottom.substr(j, 2);
+        for (int i=0; i<size; i++){
+          if (allowed[i].substr(0,2) == currSubStr) {
+            possibleChar[j].push_back(allowed[i].substr(2,1));
+          }
         }
-
-        vector<vector<string>> combList;
-        string comb;
-        for(int j=0; j<bottom.size()-1; j++){
-            for(int i=0; i<allowed.size(); i++){
-            if (bottom[j].substr(0, 2) == allowed[i].substr(0, 2))
-                combList[j].push_back(bottom[j][2]);
-            }
-        }
-
-        // No valid combination -> return false
-        for(int j=0; j<bottom.size()-1; j++){ 
-            if(combList[j].size() == 0) {
-                return false;
-            }
-        }
-
-        bool retVal;
-        string comb = "";
-        for(int j=0; j<bottom.size()-1; j++){
-            
-            for (int i=0; i<combList.size(); i++){
-                retVal = retVal || pyramidTransition(combList[i], 
-                                                        vector<string>& allowed);
-            }
-        }
-        return retVal;
+      }
+      
+      /*some function that does this
+      [[a, b], [a,b,c], [a]] -> [aaa, aba, aca, baa, bba, bca]
+      */
+      
+      // combine all possibile newBottom's boolean value
+      int newBottomSize = newBottom.size();
+      for (int i=0; i<newBottomSize; i++){
+        retVal = retVal || pyramidTransition(newBottom[i], allowed);
+      }
+      return retVal;
     }
 };
