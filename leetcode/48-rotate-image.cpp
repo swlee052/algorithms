@@ -34,3 +34,24 @@ matrix[i].length == n
 1 <= n <= 20
 -1000 <= matrix[i][j] <= 1000
 */
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+      int size = matrix[0].size(); 
+      int item = 0;
+      
+      // add to the back
+      for (int col=0; col<size; col++){
+        for (int row=size-1; row>=0; row--){
+          item = matrix[row][col];
+          matrix[col].push_back(item);
+        }
+      }
+      
+      //erase
+      for (int row=size-1; row>=0; row--){
+        matrix[row].erase(matrix[row].begin(), matrix[row].begin()+size);
+      }
+    }
+};
