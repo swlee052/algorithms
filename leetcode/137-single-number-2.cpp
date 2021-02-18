@@ -33,6 +33,9 @@ public:
       int retVal = 0;
       int num;
       
+      //record the numbers in the bits array. The ones that appear thrice will
+      //be canceled out (0->1->-1->0) and only the one that appears once will
+      //remain in the array.
       for (int i=0; i<size; i++){
         num = nums[i];
         for(int j=0; j<32; j++){
