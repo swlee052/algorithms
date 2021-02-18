@@ -24,7 +24,6 @@ Follow up: Your algorithm should have a linear runtime complexity. Could you
 implement it without using extra memory?
 */
 
-
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
@@ -34,9 +33,6 @@ public:
       int retVal = 0;
       int num;
       
-
-      //record all numbers to the bit array. The ones that appear three times
-      //will be canceled out and only the one that appears once will be left.
       for (int i=0; i<size; i++){
         num = nums[i];
         for(int j=0; j<32; j++){
@@ -58,9 +54,9 @@ public:
       
       
       // construct answer (bits array -> integer)
-      for(int i=0; i<31; i++){
-        retVal += bit[i] * pow(2 ,i);
+      for(int i=0; i<32; i++){
+        retVal += bit[i]<<i;
       }
-      return retVal + (bit[31]<<31);
+      return retVal;
     }
 };
