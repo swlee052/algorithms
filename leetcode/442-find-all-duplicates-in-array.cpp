@@ -20,20 +20,13 @@ public:
       int ix = 0;
       vector<int> ans;
       for (int i=0; i<size; i++){
-        if (nums[i] < 0){
-          ix = -nums[i] - 1;
-        }
-        else {
-          ix = nums[i] - 1; 
-        }
-       
-        if (nums[ix] < 0){
+        ix = abs(nums[i]) - 1; //could be a negative value so take absolute value
+        if (nums[ix] < 0){ // minus sign means visited already
           ans.push_back(ix + 1);
         }
-        else {
+        else { // if not visited, put minus sign
           nums[ix] = -nums[ix];
         }
-         cout << i << " " << ix << " " << nums[ix] << endl;
       }
       return ans;
     }
