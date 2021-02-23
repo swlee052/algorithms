@@ -12,7 +12,9 @@ so as to satisfy all the given equations.
 Example 1:
 Input: ["a==b","b!=a"]
 Output: false
-Explanation: If we assign say, a = 1 and b = 1, then the first equation is satisfied, but not the second.  There is no way to assign the variables to satisfy both equations.
+Explanation: If we assign say, a = 1 and b = 1, then the first equation is 
+satisfied, but not the second.  There is no way to assign the variables to 
+satisfy both equations.
 
 Example 2:
 Input: ["b==a","a==b"]
