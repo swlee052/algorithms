@@ -15,7 +15,7 @@ Output: 2
 Explanation: 13 = 4 + 9.
  
 Constraints:
-1 <= n <= 104
+1 <= n <= 10^4
 */
 
 class Solution {
