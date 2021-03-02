@@ -61,7 +61,6 @@ class Solution {
             cnt++;
           }
         }
-        
         if (cnt <= mid){
           left = mid+1;
         }
