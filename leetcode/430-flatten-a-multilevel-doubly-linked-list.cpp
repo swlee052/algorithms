@@ -99,7 +99,7 @@ public:
       else if (node->next){
         return dfs(node->next);
       }
-      else {
+      else { //only when the node is a leaf, it will return itself
         return node;
       }
     }
